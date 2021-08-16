@@ -1,0 +1,37 @@
+{% extends 'wgb/base_profile.html' %}
+
+{% block content%}
+<html>
+    <head>
+        <title>{{title}}-{{user.user_id}}</title>
+    </head>
+    <body>
+        <br>
+        <div class="jumbotron">
+            
+            <h1 class="display-5">Баланс: {{ user.balance }} ₽</h1>
+            <hr class="my-4">
+            <div class="alert alert-success" role="alert">
+                <b>ID:</b> {{ user.id }}
+            </div>
+            <div class="alert alert-success" role="alert">
+                {% if user.first_name != None %}
+                    <b>Имя:</b> {{ user.first_name }}
+                {% else %}
+                    <b>Отсутствует</b> 
+                {% endif %}
+            </div>
+            <div class="alert alert-success" role="alert">
+                {% if user.first_name != None %}
+                    <b>Фамилия:</b> {{ user.last_name }}
+                {% else %}
+                    <b>Отсутствует</b> 
+                {% endif %}
+            </div>
+            <div class="alert alert-success" role="alert">
+                <b>Дата регистрации:</b> {{ user.date_joined }}
+            </div>
+        </div>
+    </body>
+</html>
+{% endblock %}

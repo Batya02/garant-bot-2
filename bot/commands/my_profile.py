@@ -1,0 +1,43 @@
+from objects.globals import dp
+from objects import globals
+
+from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton)
+
+from db_models.AuthUser import AuthUser
+from db_models.Shops_and_Sales import SAS
+
+@dp.message_handler(lambda message: message.text == "👤Мой профиль")
+async def my_profile(message: Message):
+    globals.state_type = "" #Reset state type
+    
+    get_and_send_money = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Пополнить", callback_data=f"select-payment-service")],
+            [InlineKeyboardButton(text="Вывести", callback_data="output-money")],
+            [InlineKeyboardButton(text="Завершенные сделки", callback_data="off#deals")]
+        ]
+    )
+
+    user_data = await AuthUser.objects.filter(user_id=message.from_user.id).all()
+    user_data = user_data[0]
+
+    sales = await SAS.objects.filter(not_main_user=user_data.user_id).all()
+    shops = await SAS.objects.filter(main_user=user_data.user_id).all()
+
+    sales_sum = await SAS.objects.filter(not_main_user=user_data.user_id).all()
+    sales_sum = sum([float(sum.price) for sum in sales_sum])
+
+    shops_sum = await SAS.objects.filter(main_user=user_data.user_id).all()
+    shops_sum = sum([float(sum.price) for sum in shops_sum])
+
+    await message.answer(
+        f"🗝Ваш ID: <code>{user_data.user_id}</code>\n"
+        f"💰Ваш баланс: {user_data.balance}\n\n"
+        f"➜\n"
+        f"🛒Продажи: {len(sales)} шт\n"
+        f"🛒Покупки: {len(shops)} шт\n"
+        f"➜\n"
+        f"📊Сумма продаж: {sales_sum}\n"
+        f"📊Сумма покупок: {shops_sum}",
+        reply_markup=get_and_send_money
+    )

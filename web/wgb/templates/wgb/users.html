@@ -1,0 +1,51 @@
+{% extends "wgb/base.html" %}
+
+{% load static %}
+
+{% block content %}
+    <title>{% block title %}{% endblock %} Users </title>
+    <link rel="stylesheet" href="{% static 'wgb/css/main.css' %}">
+    <br>
+    <div class="container py-5 container-fluid" style="background-color: white;">
+            <h2 class="mb-4">Пользователи</h2>        
+            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>User Id</th>
+                            <th>Username</th>
+                            <th>Date Created</th>
+                            <th>Balance(₽)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users_data %}
+                        <tr>
+                            <th scope="row">{{ user.id }}</th>
+                            <td>
+                                <div class="btn-group dropright">
+                                    <form method="post" action="/more-info/{{ user.user_id }}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary dropdown-toggle btn-sm">{{user.user_id}}</button>
+                                    </form>
+                                </div>
+                            </td>
+                            {% if user.username == "None" %}
+                                <td>Отсутсвует</td>
+                            {% else %}
+                                <td><a href="https://t.me/{{user.username}}">{{user.username}}</a></td>
+                            {% endif %}
+                            <td>{{user.created}}</td>
+                            <td>{{user.balance}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit" name="sort-users">↑↓</button>
+            </form>
+    </div>
+{% endblock %}  
