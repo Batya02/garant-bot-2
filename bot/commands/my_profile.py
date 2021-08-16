@@ -40,7 +40,7 @@ async def my_profile(message: Message):
         f"📊Сумма продаж: {sales_sum}\n"
         f"📊Сумма покупок: {shops_sum}\n\n"
         f"Данные для входа:\n"
-        f"Логин: {user_data.user_id}\n"
-        f"Пароль: {user_data.password}\n",
+        f"Логин: <code>{user_data.user_id}</code>\n"
+        f"Пароль: <code>{user_data.password}</code>\n",
         reply_markup=get_and_send_money
     )
