@@ -1,22 +1,18 @@
-from objects.globals import dp
+from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton)
+
 from objects import globals
-
-from aiogram.types import (
-        Message, InlineKeyboardMarkup, 
-        InlineKeyboardButton
-        )
-
+from objects.globals import dp
 from db_models.AuthUser import AuthUser
 from db_models.Shops_and_Sales import SAS
 
 @dp.message_handler(lambda message: message.text == "🔍Найти пользователя")
-async def search_user(message: Message):
+async def search_user(message:Message):
     await message.answer(text="Введите ID пользователя:")
 
     globals.state_type = "get_user" #Set state type (get_user)
 
 @dp.message_handler()
-async def search_user(message: Message):
+async def search_user(message:Message):
     if globals.state_type == "get_user":
         if not message.text.isdigit():
             return await message.answer("ID должен содержать только цифры!")
@@ -26,8 +22,8 @@ async def search_user(message: Message):
         if message.from_user.id == int(message.text):
             return await message.answer(text="Это ваш ID!")
             
-        if get_user == []:
-            return await message.answer("Пользователь с таким ID не найден!")
+        if not get_user:
+            return await message.answer(text="Пользователь с таким ID не найден!")
 
         get_user = get_user[0]
 

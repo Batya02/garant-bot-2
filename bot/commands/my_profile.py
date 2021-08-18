@@ -1,13 +1,12 @@
-from objects.globals import dp
-from objects import globals
-
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton)
 
+from objects import globals
+from objects.globals import dp
 from db_models.AuthUser import AuthUser
 from db_models.Shops_and_Sales import SAS
 
 @dp.message_handler(lambda message: message.text == "👤Мой профиль")
-async def my_profile(message: Message):
+async def my_profile(message:Message):
     globals.state_type = "" #Reset state type
     
     get_and_send_money = InlineKeyboardMarkup(

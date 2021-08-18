@@ -1,43 +1,34 @@
 from typing import Dict
 from asyncio import sleep
-
-from aiogram.types import (CallbackQuery, InlineKeyboardMarkup,
-    Message, InlineKeyboardButton
-    )
-from aiogram.dispatcher.storage import FSMContext
-
-from objects.globals import dp, bot, payment_services, config
-
-from db_models.AuthUser import AuthUser
-from db_models.Shops_and_Sales import SAS
-from db_models.OutputApplications import OutputApplication
-
-from datetime import datetime as dt
+from loguru import logger
 from datetime import timedelta
-
-from telegram_bot_pagination import InlineKeyboardPaginator
-
-from formats.dateTime import datetime_format
-from formats.phone import phone_format
+from datetime import datetime as dt
 
 from payment_services.QIWI import p2p_wallet
+from telegram_bot_pagination import InlineKeyboardPaginator
+from aiogram.types import (CallbackQuery, InlineKeyboardMarkup,
+    Message, InlineKeyboardButton)
+from aiogram.dispatcher.storage import FSMContext
 
 from states.MEM import Mem
-
+from formats.phone import phone_format
+from db_models.AuthUser import AuthUser
+from db_models.Shops_and_Sales import SAS
+from formats.dateTime import datetime_format
 from keyboards.keyboards import MENU_BUTTONS
-
-from loguru import logger
+from db_models.OutputApplications import OutputApplication
+from objects.globals import dp, bot, payment_services, config
 
 @dp.callback_query_handler(lambda query: query.data == "select-payment-service")
-async def select_payment_service(query: CallbackQuery):
+async def select_payment_service(query:CallbackQuery):
     payments_services_markup = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text=button, callback_data=f"service_{button}") for button in payment_services]])
 
     return await bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.message_id,
-        text="Выберите платежную систему", reply_markup=payments_services_markup)
+                                       text="Выберите платежную систему", reply_markup=payments_services_markup)
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("service")))
-async def get_money(query: CallbackQuery):
+async def get_money(query:CallbackQuery):
     
     global SERVICE
     SERVICE = query.data.split("_")[1]
@@ -46,12 +37,12 @@ async def get_money(query: CallbackQuery):
         return await query.answer(text="Временно недоступен!")
 
     await bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.message_id,
-        text="Введите сумму для пополнения:")
+                                text="Введите сумму для пополнения:")
 
     await Mem.get_amount_balance_func.set()
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("create-deal")))
-async def start_deal(query: CallbackQuery, state: FSMContext):
+async def start_deal(query:CallbackQuery, state:FSMContext):
 
     await bot.send_message(chat_id=query.from_user.id, text="Введите сумму сделки:")
 
@@ -61,10 +52,10 @@ async def start_deal(query: CallbackQuery, state: FSMContext):
     await Mem.set_deal_amount.set()
 
 @dp.callback_query_handler(lambda query: query.data == "active_shops")
-async def active_shops(query: CallbackQuery):
+async def active_shops(query:CallbackQuery):
     shops = await SAS.objects.filter(main_user=query.from_user.id, ended=0).all()
 
-    if len(shops) == 0:
+    if not shops:
         return await bot.send_message(chat_id=query.from_user.id, text="Активные покупки отсутствуют.")
 
     for shop in shops:
@@ -83,15 +74,15 @@ async def active_shops(query: CallbackQuery):
         f"Тип: {type}"
 
         await bot.send_message(chat_id=query.from_user.id, text=shop_page, 
-            reply_markup=globals()[f"{shop.id}"])
+                               reply_markup=globals()[f"{shop.id}"])
 
     return await bot.send_message(chat_id=query.from_user.id, text=f"Ваши активные покупки: {len(shops)}")
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("active_sales")))
-async def active_sales(query: CallbackQuery):
+async def active_sales(query:CallbackQuery):
     sales = await SAS.objects.filter(not_main_user=query.from_user.id, ended=0).all()
 
-    if len(sales) == 0:
+    if not sales:
         return await bot.send_message(query.from_user.id, text="Активные продажи отсутствуют.")
 
     for sale in sales:
@@ -112,8 +103,9 @@ async def active_sales(query: CallbackQuery):
 
 @dp.message_handler(state=Mem.get_amount_balance_func)
 @logger.catch
-async def get_amount_balance(message: Message, state: FSMContext):
+async def get_amount_balance(message:Message, state:FSMContext):
     await state.finish()
+
     if not message.text.isdigit():
         return await message.answer(text="Вводимое значение должно быть числом!")
 
@@ -145,7 +137,7 @@ async def get_amount_balance(message: Message, state: FSMContext):
     elif SERVICE == "Yoomoney":pass
 
 @dp.message_handler(state=Mem.set_deal_amount)
-async def set_deal_amount(message: Message, state: FSMContext):
+async def set_deal_amount(message:Message, state:FSMContext):
 
     if message.text.replace(".", "").isdigit() or message.text.isdigit():
         price = float(message.text)
@@ -164,15 +156,15 @@ async def set_deal_amount(message: Message, state: FSMContext):
     
     # Create a new deal
     await SAS.objects.create(main_user=main_user, created=dt.now(),
-        price=price, not_main_user=not_main_user,
-        type="deal", ended="False")
+                             price=price, not_main_user=not_main_user,
+                             type="deal", ended="False")
 
     await message.answer(text="Сделка успешно создана!")
 
     await state.finish()
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("off-deal")))
-async def off_deal(query: CallbackQuery): 
+async def off_deal(query:CallbackQuery): 
     update_data_deal = await SAS.objects.get(id=int(query.data.split("_")[1]))
 
     update_data_not_main_user = await AuthUser.objects.get(user_id=int(update_data_deal.not_main_user))
@@ -187,13 +179,13 @@ async def off_deal(query: CallbackQuery):
     f"Завершить сделку?"
 
     await bot.send_message(chat_id=update_data_not_main_user.user_id, text=new_app_page,
-        reply_markup=reset_deal_markup)
+                           reply_markup=reset_deal_markup)
 
     await bot.edit_message_text(chat_id = query.from_user.id, message_id = query.message.message_id,
-        text = "Отправлена заявка на завершение сделки.")
+                                text = "Отправлена заявка на завершение сделки.")
 
 @dp.callback_query_handler(lambda query: query.data == "off#deals")
-async def off_deals(query: CallbackQuery):
+async def off_deals(query:CallbackQuery):
 
     all_shops = await SAS.objects.filter(main_user=query.from_user.id, ended=True).all()
     all_sales = await SAS.objects.filter(not_main_user=query.from_user.id, ended=True).all()
@@ -208,10 +200,10 @@ async def off_deals(query: CallbackQuery):
         text="Выберите тип", reply_markup=type_deal_buttons)
 
 @dp.callback_query_handler(lambda query: query.data == "off_shops")
-async def all_off_shops(query: CallbackQuery):
+async def all_off_shops(query:CallbackQuery):
     all_shops = await SAS.objects.filter(main_user=query.from_user.id, ended=True).all()
 
-    if len(all_shops) == 0:
+    if not all_shops:
         return await bot.edit_message_text(chat_id=query.from_user.id, message_id=query.message.message_id,
             text="У вас отсутствуют завершенные покупки!")
 
@@ -239,11 +231,11 @@ async def all_off_shops(query: CallbackQuery):
         reply_markup=paginator.markup)
 
 @dp.callback_query_handler(lambda query: query.data == "off_sales")
-async def all_off_sales(query: CallbackQuery):
+async def all_off_sales(query:CallbackQuery):
 
     all_sales = await SAS.objects.filter(not_main_user=query.from_user.id, ended=True).all()
 
-    if len(all_sales) == 0:
+    if not all_sales:
         return await bot.edit_message_text(chat_id=query.from_user.id, message_id=query.message.message_id,
             text="У вас отсутствуют завершенные продажи!")
 
@@ -271,7 +263,7 @@ async def all_off_sales(query: CallbackQuery):
         reply_markup=paginator.markup)
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("page_deal")))
-async def page_deal(query: CallbackQuery):
+async def page_deal(query:CallbackQuery):
     
     deal_data = await SAS.objects.get(id=ALL_DEALS[int(query.data.split("#")[1])-1])
     created = datetime_format(datetime=deal_data.created)
@@ -294,7 +286,7 @@ async def page_deal(query: CallbackQuery):
         text=completed_deal_page, reply_markup=paginator.markup)
 
 @dp.callback_query_handler(lambda query: query.data == "back_menu")
-async def back(query: CallbackQuery):
+async def back(query:CallbackQuery):
 
     payments_services_markup = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text=button, callback_data=f"service_{button}") for button in payment_services]])
@@ -303,7 +295,7 @@ async def back(query: CallbackQuery):
         text="Выберите платежную систему", reply_markup=payments_services_markup)
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("reset-deal")))
-async def reset_deal(query: CallbackQuery, state:FSMContext):
+async def reset_deal(query:CallbackQuery, state:FSMContext):
     deal_info = await SAS.objects.get(id=int(query.data.split("_")[1]))
     
     update_data_not_main_user = await AuthUser.objects.get(user_id=deal_info.main_user)
@@ -330,7 +322,7 @@ async def reset_deal(query: CallbackQuery, state:FSMContext):
     await state.finish()
 
 @dp.callback_query_handler(lambda query: query.data == "output-money")
-async def output_money(query: CallbackQuery):
+async def output_money(query:CallbackQuery):
     await bot.edit_message_text(chat_id=query.from_user.id, message_id=query.message.message_id,
         text=f"Отменить -> /reset\n"
         f"❗️Важно: проверьте правильность ввода\n"
@@ -339,7 +331,7 @@ async def output_money(query: CallbackQuery):
     await Mem.get_output_phone_targ.set()
 
 @dp.message_handler(lambda message: message.text not in MENU_BUTTONS, state=Mem.get_output_phone_targ)
-async def output_amount_targ(message: Message, state:FSMContext):
+async def output_amount_targ(message:Message, state:FSMContext):
     if message.text == "/reset":
         await state.finish()
         return await message.answer(text="Отмена")
@@ -350,7 +342,7 @@ async def output_amount_targ(message: Message, state:FSMContext):
     await Mem.get_output_amount_targ.set()
 
 @dp.message_handler(lambda message: message.text not in MENU_BUTTONS, state=Mem.get_output_amount_targ)
-async def output_amount_targ(message: Message, state:FSMContext):
+async def output_amount_targ(message:Message, state:FSMContext):
     if message.text == "/reset":
         await state.finish()
         return await message.answer(text="Отмена")
@@ -394,7 +386,7 @@ async def output_amount_targ(message: Message, state:FSMContext):
     await state.finish()
 
 @dp.callback_query_handler(lambda query: query.data.startswith(("confirm-operation")))
-async def confirm_operation(query: CallbackQuery):
+async def confirm_operation(query:CallbackQuery):
     get_confirm_data = query.data.split("_")
     get_user_data = await AuthUser.objects.get(user_id=get_confirm_data[1])
     

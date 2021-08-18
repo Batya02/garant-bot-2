@@ -1,12 +1,11 @@
-from objects.globals import dp
-from objects import globals
-
-from db_models.Shops_and_Sales import SAS
-
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton)
 
+from objects import globals
+from objects.globals import dp
+from db_models.Shops_and_Sales import SAS
+
 @dp.message_handler(lambda message: message.text == "📁Активные сделки")
-async def activate_deals(message: Message):
+async def activate_deals(message:Message):
 
     all_shops = await SAS.objects.filter(main_user=message.from_user.id, ended=False).all()
     all_sales = await SAS.objects.filter(not_main_user=message.from_user.id, ended=False).all()

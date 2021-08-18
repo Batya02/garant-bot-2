@@ -1,11 +1,10 @@
-from objects.globals import dp
-
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton)
 
+from objects.globals import dp
 from objects.globals import config
 
 @dp.message_handler(lambda message: message.text == "❓Помощь")
-async def help(message: Message):
+async def help(message:Message):
 
     admin_url:str = r"https://t.me/%s" % config["admin_username"]
 

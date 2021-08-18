@@ -10,7 +10,6 @@ class AuthUser(Model):
     __metadata__ = metadata
 
     id = Integer(primary_key=True)
-
     password = String(max_length=128)
     user_id = Integer()
     is_superuser = Boolean(default=False)

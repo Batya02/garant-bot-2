@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound, Http404
+from django.http import HttpResponseNotFound, Http404
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -35,12 +35,8 @@ def more_info_user(request, user_id):
     if not output_apps:
         output_apps = None
 
-    all_data = {
-        "title":       f"User-{user_data.user_id}",
-        "user_data":   user_data,
-        "deals":       deals,
-        "output_apps": output_apps
-    }
+    all_data = {"title": f"User-{user_data.user_id}","user_data": user_data,
+        "deals": deals, "output_apps": output_apps}
 
     return render(request, "wgb/more-info-user.html", all_data)
 
