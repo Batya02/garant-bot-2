@@ -135,7 +135,7 @@ def logout(request):
 
 def users(request):
     cookie_value = request.COOKIES.get("admin")
-    print(cookie_value)
+
     if cookie_value:
 
         data = {"title":"Users", "button_front_name":"Выйти", 
