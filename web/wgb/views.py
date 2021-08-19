@@ -36,7 +36,8 @@ def more_info_user(request, user_id):
         output_apps = None
 
     all_data = {"title": f"User-{user_data.user_id}","user_data": user_data,
-        "deals": deals, "output_apps": output_apps}
+        "deals": deals, "output_apps": output_apps, 
+        "button_front_name":"Выйти", "action":"/logout"}
 
     return render(request, "wgb/more-info-user.html", all_data)
 
