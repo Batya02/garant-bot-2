@@ -31,6 +31,10 @@
             <div class="alert alert-success" role="alert">
                 <b>Дата регистрации:</b> {{ user.date_joined }}
             </div>
+            <div class="progress" style="height: 20px;">
+                <div class="progress-bar bg-success w-{{percnet_shops}}" role="progressbar" aria-valuenow="{{percnet_shops}}" aria-valuemin="0" aria-valuemax="100">Покупки({{percnet_shops}}%)</div>
+                <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100">Продажи({{percent_sales}}%)</div>
+            </div>
         </div>
     </body>
 </html>

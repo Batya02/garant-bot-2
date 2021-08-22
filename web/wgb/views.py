@@ -14,9 +14,7 @@ def index(request):
 
     if admin_cookie_django:
         return HttpResponseRedirect(reverse("users"))
-
     elif user_cookie_value != None:
-
         return HttpResponseRedirect(reverse("user_profile", args=(user_cookie_value,)))
 
     data = {"title":"Garant Bot Web", "button_front_name":"Войти", "action":"login/"}
@@ -51,36 +49,28 @@ def login(request):
 
             if login == "" and password == "":
                 data["message"] = "Поля не должны быть пустыми!"
-
             elif login == "" and password != "":
                 data["message"] = "Нужно ввести логин!"
-
             elif login != "" and password == "":
                 data["message"] = "Нужно ввести пароль!"
-
             else:
                 try:
                     check_user = auth(user_data=AuthUser, login=login, password=password)
                     
                     if check_user.is_superuser:
                         completed_auth = HttpResponseRedirect(reverse("users"))
-
                         completed_auth.set_cookie("admin", True)
                         return completed_auth
-                    
                     else:
-
                         if check_user is not None:
                             data = {"title":"Profile", "user_id":int(check_user.user_id),
                                 "button_front_name":"Выйти", "action":"/logout"}
 
                             completed_auth = HttpResponseRedirect(reverse("user_profile", args=(login,)))
-
                             completed_auth.set_cookie("user", login)
                             return completed_auth
                         else:
                             data["message"] = "Неверный логин или пароль!"
-
                 except ValueError:
                     data["message"] = "Неверный логин!"
 
@@ -91,12 +81,18 @@ def user_profile(request, user_id):
 
     if cookie_value != None:
         main_data_user = AuthUser.objects.get(user_id=user_id)
+        shops = ShopsAndSales.objects.filter(main_user=user_id).all()
+        sales = ShopsAndSales.objects.filter(not_main_user=user_id).all()
 
-        data = {"title":"Profile", "button_front_name":"Выйти", 
-            "action":"/logout", "user_id":user_id, "user":main_data_user}
+        percent_together: int = len(shops) + len(sales)
+        percent_shops: int = int(len(shops) / percent_together * 100)
+        percent_sales: int = int(len(sales) / percent_together * 100)
+
+        data = {"title":"Profile", "button_front_name":"Выйти",
+            "action":"/logout", "user_id":user_id, "user":main_data_user,
+            "percnet_shops":percent_shops, "percent_sales":percent_sales}
 
         return render(request, "wgb/profile.html", data)
-    
     else:
         return HttpResponseRedirect(reverse("index"))
 
@@ -129,7 +125,6 @@ def logout(request):
     response = render(request, "wgb/index.html", data)
     response.delete_cookie("user")
     response.delete_cookie("admin")
-
     return response
 
 ## Admin functions
@@ -138,7 +133,6 @@ def users(request):
     cookie_value = request.COOKIES.get("admin")
 
     if cookie_value:
-
         data = {"title":"Users", "button_front_name":"Выйти", 
              "action":"/logout", "users_data":globals.users_data}
 
@@ -149,7 +143,6 @@ def users(request):
                 globals.users_data = list(reversed(globals.users_data))
 
         return render(request, "wgb/users.html", data)
-    
     else:
         raise Http404()
 
@@ -169,7 +162,6 @@ def auth(user_data:None, login:int, password:str):
 
     if len(get_data) <= 0:
         return None
-
     else:
         get_data = get_data[0]
 
@@ -179,4 +171,4 @@ def auth(user_data:None, login:int, password:str):
     return get_data
 
 def pageNotFound(request, exception):
-    return HttpResponseNotFound("<h4>Page not found</h4>")
+    return HttpResponseRedirect(reverse("index"))
