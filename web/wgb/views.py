@@ -57,20 +57,20 @@ def login(request):
                 try:
                     check_user = auth(user_data=AuthUser, login=login, password=password)
                     
-                    if check_user.is_superuser:
-                        completed_auth = HttpResponseRedirect(reverse("users"))
-                        completed_auth.set_cookie("admin", True)
-                        return completed_auth
-                    else:
-                        if check_user is not None:
+                    if check_user is not None:
+                        if check_user.is_superuser:
+                            completed_auth = HttpResponseRedirect(reverse("users"))
+                            completed_auth.set_cookie("admin", True)
+                            return completed_auth
+                        else:
                             data = {"title":"Profile", "user_id":int(check_user.user_id),
                                 "button_front_name":"Выйти", "action":"/logout"}
 
                             completed_auth = HttpResponseRedirect(reverse("user_profile", args=(login,)))
                             completed_auth.set_cookie("user", login)
                             return completed_auth
-                        else:
-                            data["message"] = "Неверный логин или пароль!"
+                    else:
+                        data["message"] = "Неверный логин или пароль!"
                 except ValueError:
                     data["message"] = "Неверный логин!"
 
@@ -83,10 +83,17 @@ def user_profile(request, user_id):
         main_data_user = AuthUser.objects.get(user_id=user_id)
         shops = ShopsAndSales.objects.filter(main_user=user_id).all()
         sales = ShopsAndSales.objects.filter(not_main_user=user_id).all()
-
         percent_together: int = len(shops) + len(sales)
-        percent_shops: int = int(len(shops) / percent_together * 100)
-        percent_sales: int = int(len(sales) / percent_together * 100)
+
+        if not shops:
+            percent_shops: int = 0
+        else:
+            percent_shops: int = int(len(shops) / percent_together * 100)
+
+        if not sales:
+            percent_sales: int = 0
+        else:
+            percent_sales: int = int(len(sales) / percent_together * 100)
 
         data = {"title":"Profile", "button_front_name":"Выйти",
             "action":"/logout", "user_id":user_id, "user":main_data_user,
@@ -117,7 +124,6 @@ def sales(request, user_id):
         "action":"/logout", "user_id":user_id, "sales":sales}
 
     return render(request, "wgb/sales.html", data)
-
 
 def logout(request):
     data = {"title":"Garant Bot Web", "button_front_name":"Войти", "action":"login/"}
@@ -158,7 +164,7 @@ def get_client_ip(request):
     return ip
 
 def auth(user_data:None, login:int, password:str):
-    get_data = user_data.objects.filter(user_id=login).all()
+    get_data = user_data.objects.filter(user_id=int(login)).all()
 
     if len(get_data) <= 0:
         return None
