@@ -116,7 +116,7 @@ def sales(request, user_id):
     data = {"title":"Продажи", "button_front_name":"Выйти", 
         "action":"/logout", "user_id":user_id, "sales":sales}
 
-    return render(request, "wgb/shops.html", data)
+    return render(request, "wgb/sales.html", data)
 
 
 def logout(request):
