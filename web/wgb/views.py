@@ -86,18 +86,18 @@ def user_profile(request, user_id):
         percent_together: int = len(shops) + len(sales)
 
         if not shops:
-            percent_shops: int = 0
+            percent_shops = None
         else:
             percent_shops: int = int(len(shops) / percent_together * 100)
 
         if not sales:
-            percent_sales: int = 0
+            percent_sales = None
         else:
             percent_sales: int = int(len(sales) / percent_together * 100)
 
         data = {"title":"Profile", "button_front_name":"Выйти",
             "action":"/logout", "user_id":user_id, "user":main_data_user,
-            "percnet_shops":percent_shops, "percent_sales":percent_sales}
+            "percent_shops":percent_shops, "percent_sales":percent_sales}
 
         return render(request, "wgb/profile.html", data)
     else:
@@ -163,10 +163,10 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-def auth(user_data:None, login:int, password:str):
-    get_data = user_data.objects.filter(user_id=int(login)).all()
+def auth(user_data: None, login: int, password: str):
+    get_data = user_data.objects.filter(user_id=login).all()
 
-    if len(get_data) <= 0:
+    if not get_data:
         return None
     else:
         get_data = get_data[0]

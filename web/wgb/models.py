@@ -5,7 +5,7 @@ from datetime import datetime as dt
 
 class AuthUser(models.Model):
 
-    id = models.IntegerField(primary_key=True, null=False)
+    id = models.IntegerField(primary_key=True)
     password = models.CharField(max_length=128)
     user_id = models.IntegerField()
     is_superuser = models.BooleanField(default=False)
