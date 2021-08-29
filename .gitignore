@@ -9,6 +9,7 @@ pyvenv.cfg
 bin/
 include/
 lib/
+share/
 lib64/python3.9
 
 db/
