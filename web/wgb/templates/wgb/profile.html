@@ -32,13 +32,13 @@
                 <b>Дата регистрации:</b> {{ user.date_joined }}
             </div>
             <div class="progress" style="height: 40px;">
-                {% if percent_shops == 0 or percent_shops == None%}
+                {% if percent_shops == None %}
                     <div class="progress-bar bg-success w-{{percnet_shops}}" role="progressbar" aria-valuenow="{{percnet_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-secondary">Отсутствуют</span></h6></div>
                 {% else %}
                     <div class="progress-bar bg-success w-{{percnet_shops}}" role="progressbar" aria-valuenow="{{percnet_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-secondary">{{percent_shops}}%</span></h6></div>
                 {% endif %}
 
-                {% if percent_sales == 0 or  percent_sales == None%}
+                {% if percent_sales == None %}
                     <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-secondary">Отсутствуют</span></h6></div>
                 {% else %}
                     <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-secondary">{{percent_sales}}%</span></h6></div>
