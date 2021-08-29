@@ -1,54 +1,3 @@
-<<<<<<< HEAD
-{% extends 'wgb/base_profile.html' %}
-
-{% block content%}
-<html>
-    <head>
-        <title>{{title}}-{{user.user_id}}</title>
-    </head>
-    <body>
-        <br>
-        <div class="jumbotron">
-            
-            <h1 class="display-5">Баланс: {{ user.balance }} ₽</h1>
-            <hr class="my-4">
-            <div class="alert alert-success" role="alert">
-                <b>ID:</b> {{ user.id }}
-            </div>
-            <div class="alert alert-success" role="alert">
-                {% if user.first_name != None %}
-                    <b>Имя:</b> {{ user.first_name }}
-                {% else %}
-                    <b>Отсутствует</b> 
-                {% endif %}
-            </div>
-            <div class="alert alert-success" role="alert">
-                {% if user.first_name != None %}
-                    <b>Фамилия:</b> {{ user.last_name }}
-                {% else %}
-                    <b>Отсутствует</b> 
-                {% endif %}
-            </div>
-            <div class="alert alert-success" role="alert">
-                <b>Дата регистрации:</b> {{ user.date_joined }}
-            </div>
-            <div class="progress" style="height: 40px;">
-                {% if percent_shops == None %}
-                    <div class="progress-bar bg-success w-{{percnet_shops}}" role="progressbar" aria-valuenow="{{percnet_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-secondary">Отсутствуют</span></h6></div>
-                {% else %}
-                    <div class="progress-bar bg-success w-{{percnet_shops}}" role="progressbar" aria-valuenow="{{percnet_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-secondary">{{percent_shops}}%</span></h6></div>
-                {% endif %}
-
-                {% if percent_sales == None %}
-                    <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-secondary">Отсутствуют</span></h6></div>
-                {% else %}
-                    <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-secondary">{{percent_sales}}%</span></h6></div>
-                {% endif %}
-            </div>
-        </div>
-    </body>
-</html>
-=======
 {% extends 'wgb/base_profile.html' %}
 
 {% block content%}
@@ -98,5 +47,4 @@
         </div>
     </body>
 </html>
->>>>>>> d282f303703a0d7c0ffb442368ef601c9895a8db
 {% endblock %}
