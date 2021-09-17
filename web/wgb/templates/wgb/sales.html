@@ -1,9 +1,12 @@
 {% extends 'wgb/base_profile.html' %}
 
+{% load static %}
+
 {% block content%}
 <html>
     <head>
         <title>{{title}}</title>
+        <link rel="stylesheet" href="{% static 'wgb/css/main.css' %}">
     </head>
     <body>
         <br>
@@ -19,25 +22,34 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>#</th>
-                            <th>ID покупателя(ВЫ)</th>
+                            <th>ID покупателя</th>
                             <th>Дата создания</th>
                             <th>Дата завершения</th>
                             <th>Сумма сделки</th>
-                            <th>ID продавца</th>
+                            <th>ID продавца(ВЫ)</th>
                             <th>Статус</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for shop in shops %}
+                        {% for sale in sales %}
                         <tr>
-                            <th scope="row">{{ shop.id }}</th>
+                            <th scope="row">{{ sale.id }}</th>
                             <th>
                                 <div class="btn-group dropright">
                                 <form method="post">
-                                    <button type=submit" class="btn btn-secondary dropdown-toggle btn-sm" name="more-info" value="{{ shop.not_main_user }}">{{ shop.not_main_user }}</button>
+                                    <button type="submit" class="btn btn-secondary dropdown-toggle btn-sm" name="more-info" value="{{ sale.main_user }}">{{ sale.main_user }}</button>
                                 </form>
                                 </div>
                             </th>
+                            <th><span>{{ sale.created }}</span></th>
+                            <th><span>{{ sale.uncreated }}</span></th>
+                            <th><span>{{ sale.price }}</span></th>
+                            <th><span>{{ sale.not_main_user }}</span></th>
+                            {% if sale.ended == True %}
+                                <th style="color: green;">Завершено</th>
+                            {% elif sale.ended == False %}
+                                <th style="color:darkgoldenrod;">В процессе</th>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
