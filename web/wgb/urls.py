@@ -7,8 +7,8 @@ urlpatterns = [
     path("more-info/<int:user_id>", more_info_user),
     path("login/", login),
     path("profile/<int:user_id>", user_profile, name="user_profile"),
-    path("profile/<int:user_id>/shops", shops, name="shops"),
-    path("profile/<int:user_id>/sales", sales, name="sales"),
+    path("<int:user_id>/shops", shops, name="shops"),
+    path("<int:user_id>/sales", sales, name="sales"),
     path("logout", logout)
 ]
 
