@@ -3,6 +3,7 @@ from django.db import models
 
 from datetime import datetime as dt
 
+
 class AuthUser(models.Model):
 
     id = models.IntegerField(primary_key=True)
@@ -24,6 +25,7 @@ class AuthUser(models.Model):
             self.username, self.last_name, self.email, self.is_staff,
             self.is_active, self.date_joined, self.first_name, self.balance,)
 
+
 class ShopsAndSales(models.Model):
 
     id = models.IntegerField(primary_key=True)
@@ -37,14 +39,15 @@ class ShopsAndSales(models.Model):
 
     def __str__(self):
         return "<ShopsAndSales %i %i %s %s %.2f %i %s %r>" % (
-            self.id, self.main_user, 
+            self.id, self.main_user,
             dt.strftime(self.created, "%Y-%m-%d %H:%M:%S"),
             dt.strftime(self.uncreated, "%Y-%m-%d %H:%M:%S"),
-            self.price, self.not_main_user, 
+            self.price, self.not_main_user,
             self.type, self.ended,)
 
+
 class OutputApplication(models.Model):
-    
+
     id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     amount = models.FloatField()
@@ -54,5 +57,5 @@ class OutputApplication(models.Model):
     def __str__(self):
         return "<OutputApplication %i %i %.2f %s %r>" % (
             self.id, self.user_id,
-            self.amount, self.created, 
+            self.amount, self.created,
             self.status,)
