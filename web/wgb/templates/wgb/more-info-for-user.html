@@ -1,0 +1,36 @@
+{% extends "wgb/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <link rel="stylesheet" href="{% static 'wgb/css/main.css' %}">
+    </head>
+    <body>
+        <br>
+        <div class="jumbotron">
+            
+            <h1 class="display-4">{{user_data.user_id}}</h1>
+            <hr class="my-4">
+            <div class="alert alert-success" role="alert">
+                <b>ID:</b> {{ user_data.id }}
+            </div>
+            {% if username != None %}
+                <div class="alert alert-success" role="alert">
+                    <b>Username:</b> @{{user_data.username }}
+                </div>
+            {% else %}
+                <div class="alert alert-success" role="alert">
+                    <b>Username:</b> Отсутствует
+                </div>
+            {% endif %}
+            <div class="alert alert-success" role="alert">
+                <b>Дата регистрации:</b> {{ user_data.date_joined }}
+            </div>
+        </div>
+    </body>
+</html>
+{% endblock %}

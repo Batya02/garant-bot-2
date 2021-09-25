@@ -15,33 +15,33 @@
                 <b>ID:</b> {{ user.id }}
             </div>
             <div class="alert alert-success" role="alert">
-                {% if user.first_name != None %}
+                {% if user.first_name != 'None' %}
                     <b>Имя:</b> {{ user.first_name }}
                 {% else %}
-                    <b>Отсутствует</b> 
+                    <b>Имя:</b> Отсутствует
                 {% endif %}
             </div>
             <div class="alert alert-success" role="alert">
-                {% if user.first_name != None %}
+                {% if user.first_name != 'None' %}
                     <b>Фамилия:</b> {{ user.last_name }}
                 {% else %}
-                    <b>Отсутствует</b> 
+                    <b>Имя:</b> Отсутствует
                 {% endif %}
             </div>
             <div class="alert alert-success" role="alert">
                 <b>Дата регистрации:</b> {{ user.date_joined }}
             </div>
-            <div class="progress" style="height: 35px;">
-                {% if percent_shops == None %}
+            <div class="progress" style="height: 30px;">
+                {% if not percent_shops %}
                     <div class="progress-bar bg-success w-{{percent_shops}}" role="progressbar" aria-valuenow="{{percent_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-secondary">Отсутствуют</span></h6></div>
                 {% else %}
-                    <div class="progress-bar bg-success w-{{percent_shops}}" role="progressbar" aria-valuenow="{{percent_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-secondary">{{percent_shops}}%</span></h6></div>
+                    <div class="progress-bar bg-success w-50" role="progressbar" aria-valuenow="{{to_int_percent_shops}}" aria-valuemin="0" aria-valuemax="100"><h6>Покупки <span class="badge badge-light">{{percent_shops | floatformat:2}}%</span></h6></div>
                 {% endif %}
 
-                {% if percent_sales == None %}
+                {% if not percent_sales %}
                     <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-secondary">Отсутствуют</span></h6></div>
                 {% else %}
-                    <div class="progress-bar bg-info w-{{percent_sales}}" role="progressbar" aria-valuenow="{{percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-secondary">{{percent_sales}}%</span></h6></div>
+                    <div class="progress-bar bg-info w-50" role="progressbar" aria-valuenow="{{to_int_percent_sales}}" aria-valuemin="0" aria-valuemax="100"><h6>Продажи <span class="badge badge-light">{{percent_sales | floatformat:2}}%</span></h6></div>
                 {% endif %}
             </div>
         </div>

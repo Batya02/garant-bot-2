@@ -36,7 +36,8 @@
                             <th scope="row">{{ sale.id }}</th>
                             <th>
                                 <div class="btn-group dropright">
-                                <form method="post">
+                                <form method="post" action="/more-info-for-user/{{sale.main_user}}">
+                                    {% csrf_token %}
                                     <button type="submit" class="btn btn-secondary dropdown-toggle btn-sm" name="more-info" value="{{ sale.main_user }}">{{ sale.main_user }}</button>
                                 </form>
                                 </div>

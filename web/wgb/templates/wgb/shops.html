@@ -40,7 +40,8 @@
                                 <th><span>{{ shop.price }}</span></th>
                                 <th>
                                     <div class="btn-group dropright">
-                                    <form method="post">
+                                    <form method="post" action="/more-info-for-user/{{shop.not_main_user}}">
+                                        {% csrf_token %}
                                         <button type=submit" class="btn btn-secondary dropdown-toggle btn-sm" name="more-info" value="{{ shop.not_main_user }}">{{ shop.not_main_user }}</button>
                                     </form>
                                     </div>
