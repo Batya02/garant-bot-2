@@ -24,23 +24,41 @@ def index(request):
 
 
 def more_info_user(request, user_id):
+    """Admin"""
 
-    user_data = AuthUser.objects.filter(user_id=user_id).all()[0]
-    deals = list(ShopsAndSales.objects.filter(main_user=user_id).all())
-    output_apps = list(OutputApplication.objects.filter(user_id=user_id).all())
+    admin_cookie_django = request.COOKIES.get("admin")
 
-    if not deals:
-        deals = None
+    if admin_cookie_django:
+        user_data = AuthUser.objects.filter(user_id=user_id).all()[0]
+        deals = list(ShopsAndSales.objects.filter(main_user=user_id).all())
+        output_apps = list(OutputApplication.objects.filter(user_id=user_id).all())
 
-    if not output_apps:
-        output_apps = None
+        if not deals:
+            deals = None
 
-    all_data = {"title": f"User-{user_data.user_id}", "user_data": user_data,
-                "deals": deals, "output_apps": output_apps,
-                "button_front_name": "Выйти", "action": "/logout"}
+        if not output_apps:
+            output_apps = None
 
-    return render(request, "wgb/more-info-user.html", all_data)
+        all_data = {"title": f"User-{user_data.user_id}", "user_data": user_data,
+                    "deals": deals, "output_apps": output_apps,
+                    "button_front_name": "Выйти", "action": "/logout"}
 
+        return render(request, "wgb/more-info-user.html", all_data)
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
+def more_info_for_user(request, user_id):
+    user_cookie_value = request.COOKIES.get("user")
+
+    if user_cookie_value:
+        user_data = AuthUser.objects.filter(user_id=user_id).all()[0]
+
+        all_data = {"title": f"User-{user_data.user_id}", "user_data": user_data,
+                    "button_front_name": "Выйти", "action": "/logout"}
+
+        return render(request, "wgb/more-info-for-user.html", all_data)
+    else:
+        return HttpResponseRedirect(reverse("index"))
 
 def login(request):
     data = {"message": None}
@@ -86,7 +104,7 @@ def login(request):
 def user_profile(request, user_id):
     cookie_value = request.COOKIES.get("user")
 
-    if cookie_value != None:
+    if cookie_value:
         main_data_user = AuthUser.objects.get(user_id=user_id)
         shops = ShopsAndSales.objects.filter(main_user=user_id).all()
         sales = ShopsAndSales.objects.filter(not_main_user=user_id).all()
@@ -95,16 +113,21 @@ def user_profile(request, user_id):
         if not shops:
             percent_shops = None
         else:
-            percent_shops: int = int(len(shops) / percent_together * 100)
+            percent_shops = float(len(shops) / percent_together * 100)
+            to_int_percent_shops: str = str(int(percent_shops))
 
         if not sales:
             percent_sales = None
         else:
-            percent_sales: int = int(len(sales) / percent_together * 100)
+            percent_sales = float(len(sales) / percent_together * 100)
+            to_int_percent_sales = int(percent_sales)
+        
+        print(to_int_percent_sales)
 
         data = {"title": "Profile", "button_front_name": "Выйти",
                 "action": "/logout", "user_id": user_id, "user": main_data_user,
-                "percent_shops": percent_shops, "percent_sales": percent_sales}
+                "percent_shops": percent_shops, "percent_sales": percent_sales, 
+                "to_int_percent_shops": to_int_percent_shops, "to_int_percent_sales": to_int_percent_sales}
 
         return render(request, "wgb/profile.html", data)
     else:
@@ -112,27 +135,37 @@ def user_profile(request, user_id):
 
 
 def shops(request, user_id):
-    shops = ShopsAndSales.objects.filter(main_user=user_id).all()
+    cookie_value = request.COOKIES.get("user")
 
-    if not shops:
-        shops = None
+    if cookie_value:
+        shops = ShopsAndSales.objects.filter(main_user=user_id).all()
 
-    data = {"title": "Покупки", "button_front_name": "Выйти",
-            "action": "/logout", "user_id": user_id, "shops": shops}
+        if not shops:
+            shops = None
 
-    return render(request, "wgb/shops.html", data)
+        data = {"title": "Покупки", "button_front_name": "Выйти",
+                "action": "/logout", "user_id": user_id, "shops": shops}
+
+        return render(request, "wgb/shops.html", data)
+    else:
+        return HttpResponseRedirect(reverse("index"))
 
 
 def sales(request, user_id):
-    sales = ShopsAndSales.objects.filter(not_main_user=user_id).all()
+    cookie_value = request.COOKIES.get("user")
 
-    if not sales:
-        sales = None
+    if cookie_value:
+        sales = ShopsAndSales.objects.filter(not_main_user=user_id).all()
 
-    data = {"title": "Продажи", "button_front_name": "Выйти",
-            "action": "/logout", "user_id": user_id, "sales": sales}
+        if not sales:
+            sales = None
 
-    return render(request, "wgb/sales.html", data)
+        data = {"title": "Продажи", "button_front_name": "Выйти",
+                "action": "/logout", "user_id": user_id, "sales": sales}
+
+        return render(request, "wgb/sales.html", data)
+    else:
+        return HttpResponseRedirect(reverse("index"))
 
 
 def logout(request):
