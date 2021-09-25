@@ -1,9 +1,26 @@
 {% extends 'wgb/base.html' %}
 
+{% load static %}
 {% block content%}
 <html>
     <head>
         <title>{{title}}</title>
     </head>
+    <body>
+        <br>
+        <div class="jumbotron">
+            <h1 class="display-4">Garant-Bot-Web</h1>
+            <p class="lead">Упрощенная версия бота. Удобный клиент.</p>
+            <hr class="my-4">
+            <p>Бот, который помогает осуществлять сделки между двумя лицами.</p>
+            <a class="btn btn-primary btn-lg" href="https://t.me/garant_official_bot" role="button">Перейти в бота</a>
+          </div>
+          <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <p class="lead">Top Programmer AMTP</p>
+              <h5 class="display-5">©Copyright 2021</h5>
+            </div>
+          </div>
+    </body>
 </html>
 {% endblock %}
