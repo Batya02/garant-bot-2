@@ -10,13 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from os import path
+from os import path, environ
 from pathlib import Path
-from json import loads
-
-# Load configs
-with open(r"config.json", "r", encoding="utf-8") as load_config:
-    config = loads(load_config.read())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config["secret_key"]
+SECRET_KEY = str(environ.get("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config["debug"]
+DEBUG = environ.get("DEBUG")
 
 ALLOWED_HOSTS = ['*']
 
@@ -81,7 +76,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': path.join(r"%s" % config["db_path"])
+        'NAME': BASE_DIR / "db.sqlite3"
     }
 }
 
