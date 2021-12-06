@@ -5,14 +5,12 @@ from datetime import datetime as dt
 
 
 class AuthUser(models.Model):
-
-    id = models.IntegerField(primary_key=True)
     password = models.CharField(max_length=128)
     user_id = models.IntegerField()
     is_superuser = models.BooleanField(default=False)
     username = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    email = models.EmailField(max_length=255, default=None)
+    email = models.EmailField(max_length=255, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=dt.now())
@@ -27,8 +25,6 @@ class AuthUser(models.Model):
 
 
 class ShopsAndSales(models.Model):
-
-    id = models.IntegerField(primary_key=True)
     main_user = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     uncreated = models.DateTimeField()
@@ -47,8 +43,6 @@ class ShopsAndSales(models.Model):
 
 
 class OutputApplication(models.Model):
-
-    id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     amount = models.FloatField()
     created = models.DateTimeField(auto_now_add=True)
