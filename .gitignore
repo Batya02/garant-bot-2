@@ -1,4 +1,5 @@
 .vscode/
+__pycache__
 
 Include/
 Lib/
@@ -15,19 +16,5 @@ lib64/python3.9
 db/
 
 bot/config.json
-web/config.json
-
-bot/debug
-
-bot/commands/__pycache__
-bot/db_models/__pycache__
-bot/formats/__pycache__
-bot/objects/__pycache__
-bot/payment_services/__pycache__
-bot/states/__pycache__
-bot/keyboards/__pycache__
-
-web/web/__pycache__
-web/wgb/__pycache__
-web/wgb/migrations/__pycache__
-web/wgb/objects/__pycache__
+debug/
+migrations/
