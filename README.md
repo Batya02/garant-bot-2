@@ -7,7 +7,7 @@ Set `your` configs
 - BOT_TOKEN=""
 - ADMIN_ID=""
 - QIWI_SECRET_KEY=""
-`- QIWI_PHONE=""```
+- QIWI_PHONE=""```
 
 ## Docker
 Install using `docker`...
