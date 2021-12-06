@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  garant-service:
+    image: "garant-service"
+    build: .
+    environment:
+      - DEBUG=0
+      - SECRET_KEY=""
+    command: >
+      sh -c "python web/manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+
+  garant-service-bot:
+    image: "garant-serviceb-bot"
+    build: .
+    environment:
+      - BOT_TOKEN=""
+      - ADMIN_ID=""
+      - QIWI_SECRET_KEY=""
+      - QIWI_PHONE=""
+    command: "python bot/main.py"
