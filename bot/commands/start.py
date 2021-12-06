@@ -1,3 +1,4 @@
+from os import environ
 from hashlib import md5
 
 from aiogram.types import (Message, ReplyKeyboardMarkup, KeyboardButton)
@@ -9,6 +10,7 @@ from keyboards.keyboards import MENU_BUTTONS
 
 @dp.message_handler(commands="start")
 async def start(message:Message):
+
     globals.state_type = "" #Reset state type
 
     user_data = await AuthUser.objects.filter(user_id=message.from_user.id).all()
@@ -26,7 +28,7 @@ async def start(message:Message):
     buttons = list(zip([KeyboardButton(MENU_BUTTONS[k]) for k in range(len(MENU_BUTTONS)) if k % 2 == 0], 
                        [KeyboardButton(MENU_BUTTONS[k]) for k in range(len(MENU_BUTTONS)) if k % 2 != 0]))
 
-    if message.from_user.id == int(config["admin_chat_id"]):
+    if message.from_user.id == int(eval(environ.get("ADMIN_ID"))):
         buttons.append([KeyboardButton("📊Статистика")])
 
     buttons = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=buttons)
