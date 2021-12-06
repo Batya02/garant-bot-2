@@ -5,12 +5,6 @@ import sys
 from json import dumps
 
 def main():
-    if not os.path.isfile(r"config.json"):
-        with open(r"config.json", "w") as add_config:
-            add_config.write(dumps(
-                {"db_path":""},
-                indent=4))
-            add_config.close()
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.settings')
     try:
